@@ -24,6 +24,7 @@ async def list_tasks(request: Request, response: Response):
 @router.get("/{pk}")
 @cache(expire=10)
 async def get_task(pk: str, request: Request, response: Response):
+    print(pk)
     try:
         return Task.get(pk)
     except NotFoundError:

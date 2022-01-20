@@ -11,13 +11,13 @@ from .model import User
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-@router.post("/")
+@router.post("")
 async def save_user(user: User):
     # We can save the model to Redis by calling `save()`:
     return user.save()
 
 
-@router.get("/")
+@router.get("")
 async def list_users(request: Request, response: Response):
     return {"users": User.find().all()}
 

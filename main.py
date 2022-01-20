@@ -19,5 +19,9 @@ app.include_router(task_router)
 
 @app.on_event("startup")
 async def startup():
-    r = aioredis.from_url(os.getenv('REDIS_OM_URL'), encoding="utf8", decode_responses=True)
+    url = os.getenv('REDIS_OM_URL')
+    if not url:
+        url = 'redis://localhost:6379'
+
+    r = aioredis.from_url(url, encoding="utf8", decode_responses=True)
     FastAPICache.init(RedisBackend(r), prefix="fastapi-cache")
