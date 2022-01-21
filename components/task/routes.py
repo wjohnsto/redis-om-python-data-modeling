@@ -51,6 +51,11 @@ async def update_task(pk: str, task: Task):
             description=task.description
         )
 
+        if (len(task.assigned_to) > 0):
+            db_task.assigned_to = task.assigned_to
+
+        return db_task.save()
+
         return db_task.save()
     except NotFoundError:
         raise HTTPException(status_code=404, detail="task not found")
