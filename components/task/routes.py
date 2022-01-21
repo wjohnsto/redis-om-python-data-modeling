@@ -5,7 +5,9 @@ from fastapi_cache.decorator import cache
 
 from redis_om.model import NotFoundError
 
-from .model import Task
+from ..user.model import User
+
+from .model import Task, TaskAssignee
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -32,9 +34,54 @@ async def list_tasks(status: Optional[str] = None):
 @router.get("/{pk}")
 @cache(expire=10)
 async def get_task(pk: str):
-    print(pk)
     try:
         return Task.get(pk)
+    except NotFoundError:
+        raise HTTPException(status_code=404, detail="task not found")
+
+
+@router.put("/{pk}")
+async def update_task(pk: str, task: Task):
+    try:
+        db_task = Task.get(pk)
+
+        db_task.update(
+            name=task.name,
+            status=task.status,
+            description=task.description
+        )
+
+        return db_task.save()
+    except NotFoundError:
+        raise HTTPException(status_code=404, detail="task not found")
+
+
+@router.patch("/{pk}/assign/{user_pk}")
+async def assign_task(pk: str, user_pk: str):
+    try:
+        task = Task.get(pk)
+
+        if not any(user.user_id == user_pk for user in task.assigned_to):
+            task.assigned_to.append(
+                TaskAssignee(user_id=user_pk)
+            )
+            task.save()
+
+        return task
+    except NotFoundError:
+        raise HTTPException(status_code=404, detail="task not found")
+
+
+@router.get("/{pk}/assignees")
+async def get_task_assignees(pk: str):
+    try:
+        task = Task.get(pk)
+
+        users = User.find(
+            User.pk << [user.user_id for user in task.assigned_to]
+        ).all()
+
+        return users
     except NotFoundError:
         raise HTTPException(status_code=404, detail="task not found")
 

@@ -11,7 +11,7 @@ class Task(JsonModel):
     name: str = Field(index=True)
     status: str = Field(index=True)
     description: Optional[str] = Field(index=True, full_text_search=True)
-    assigned_to: List[TaskAssignee]
+    assigned_to: Optional[List[TaskAssignee]] = []
 
     @validator('status')
     def status_must_be_in_list(cls, v):
