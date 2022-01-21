@@ -1,5 +1,5 @@
 from pydantic import validator
-from redis_om import (Field, JsonModel, EmbeddedJsonModel)
+from aredis_om import (Field, JsonModel, EmbeddedJsonModel)
 from typing import List, Optional
 
 

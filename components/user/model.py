@@ -1,4 +1,4 @@
-from redis_om import (Field, HashModel)
+from aredis_om import (Field, HashModel)
 
 
 class User(HashModel):
