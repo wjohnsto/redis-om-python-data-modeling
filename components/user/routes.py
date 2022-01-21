@@ -11,6 +11,7 @@ from .model import User
 
 router = APIRouter(prefix="/users", tags=["users"])
 
+
 @router.post("")
 async def save_user(user: User):
     # We can save the model to Redis by calling `save()`:

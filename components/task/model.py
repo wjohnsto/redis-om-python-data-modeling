@@ -2,8 +2,10 @@ from pydantic import validator
 from redis_om import (Field, JsonModel, EmbeddedJsonModel)
 from typing import List, Optional
 
+
 class TaskAssignee(EmbeddedJsonModel):
     user_id: str = Field(index=True)
+
 
 class Task(JsonModel):
     name: str = Field(index=True)
@@ -14,5 +16,6 @@ class Task(JsonModel):
     @validator('status')
     def status_must_be_in_list(cls, v):
         if v.lower() not in ['new', 'in progress', 'done']:
-            raise ValueError(f'{v} is not a valid status, must be in [new, in progress, done]')
+            raise ValueError(
+                f'{v} is not a valid status, must be in [new, in progress, done]')
         return v.upper()
