@@ -19,11 +19,20 @@ async def save_task(task: Task):
 
 
 @router.get("")
-async def list_tasks(request: Request, response: Response):
+async def list_tasks(status: Optional[str] = None):
     # Create Index
     Migrator().run()
 
-    return {"tasks": Task.find(Task.status == "NEW").all()}
+    if not status:
+        return {
+            "tasks": Task.find().all()
+        }
+
+    return {
+        "tasks": Task.find(
+            Task.status == "NEW"
+        ).all()
+    }
 
 
 @router.get("/{pk}")
