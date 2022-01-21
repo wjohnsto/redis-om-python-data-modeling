@@ -6,6 +6,8 @@ from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 
+from redis_om.model import Migrator
+
 from components.user.routes import router as user_router
 from components.task.routes import router as task_router
 
@@ -13,6 +15,9 @@ app = FastAPI()
 
 app.include_router(user_router)
 app.include_router(task_router)
+
+# Create Index
+Migrator().run()
 
 
 @app.on_event("startup")

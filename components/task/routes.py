@@ -1,12 +1,9 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException
-from starlette.requests import Request
-from starlette.responses import Response
 
 from fastapi_cache.decorator import cache
 
-from redis_om.model import Migrator, NotFoundError
-from redis_om.connections import get_redis_connection
+from redis_om.model import NotFoundError
 
 from .model import Task
 
@@ -20,9 +17,6 @@ async def save_task(task: Task):
 
 @router.get("")
 async def list_tasks(status: Optional[str] = None):
-    # Create Index
-    Migrator().run()
-
     if not status:
         return {
             "tasks": Task.find().all()
@@ -37,7 +31,7 @@ async def list_tasks(status: Optional[str] = None):
 
 @router.get("/{pk}")
 @cache(expire=10)
-async def get_task(pk: str, request: Request, response: Response):
+async def get_task(pk: str):
     print(pk)
     try:
         return Task.get(pk)
@@ -45,20 +39,20 @@ async def get_task(pk: str, request: Request, response: Response):
         raise HTTPException(status_code=404, detail="task not found")
 
 
-@router.get("/user/{pk}")
+@router.get("/user/{user_pk}")
 @cache(expire=10)
-async def get_user_tasks(pk: str, status: Optional[str] = None):
+async def get_user_tasks(user_pk: str, status: Optional[str] = None):
     try:
         if not status:
             return {
                 "tasks": Task.find(
-                    Task.assigned_to.user_id == pk
+                    Task.assigned_to.user_id == user_pk
                 ).all()
             }
 
         return {
             "tasks": Task.find(
-                (Task.assigned_to.user_id == pk) &
+                (Task.assigned_to.user_id == user_pk) &
                 (Task.status == status)
             ).all()
         }
