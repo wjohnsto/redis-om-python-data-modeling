@@ -2,7 +2,7 @@ import logging
 import os
 import aioredis
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 

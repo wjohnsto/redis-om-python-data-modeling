@@ -2,7 +2,7 @@ import datetime
 import random
 import requests
 from typing import List
-from models import Address, Inventory, ProductDetail, Store, Review, Product
+from models import Inventory, Store, Review, Product
 
 
 async def random_data(resource_endpoint: str, resource: str = None, size=5):
