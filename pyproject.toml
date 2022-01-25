@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "redis-om-fastapi"
-version = "0.1.0"
-description = "An example integration between Redis OM and FastAPI"
-authors = ["Andrew Brookins <andrew.brookins@redislabs.com>"]
+name = "redis-om-python-retail"
+version = "0.0.1"
+description = "An example integration between Redis OM and FastAPI for a retail application"
+authors = ["Will Johnston <will.johnston@redis.com>"]
 license = "BSD-3-Clause"
 
 [tool.poetry.dependencies]

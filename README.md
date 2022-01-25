@@ -1,4 +1,4 @@
-# redis-om-python-tasks
+# redis-om-python-retail
 
 This repository contains an example of how to use [Redis OM Python](https://github.com/redis/redis-om-python) with FastAPI.
 
