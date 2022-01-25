@@ -1,174 +1,180 @@
+import datetime
 import random
+import requests
 from typing import List
-from models import Address, Inventory, Store, Review, Product, Contact, User
+from models import Address, Inventory, ProductDetail, Store, Review, Product
 
 
-async def generate_users():
-    return [
-        await User(
-            name="John Doe",
-            contact_info=Contact(
-                phone="+1-555-555-5555",
-                email="john@doe.com"
-            )
-        ).save(),
+async def random_data(resource_endpoint: str, resource: str = None, size=5):
+    if not resource:
+        resource = resource_endpoint
 
-        await User(
-            name="Jane Doe",
-            contact_info=Contact(
-                phone="+1-555-555-5555",
-                email="jane@doe.com"
-            )
-        ).save(),
+    response = requests.get(
+        f"https://random-data-api.com/api/{resource_endpoint}/random_{resource}?size={size}")
+    return response.json()
 
-        await User(
-            name="Jim Brown",
-            contact_info=Contact(
-                phone="+1-555-555-5555",
-                email="jim@brown.com"
-            )
-        ).save(),
-    ]
+
+async def random_appliances():
+    users = await random_data("appliance")
+    return [{"manufacturer": x['brand']} for x in users]
+
+
+async def random_sentences():
+    sentences = await random_data("hipster", "hipster_stuff")
+    return [x['sentence'] for x in sentences]
+
+
+async def random_dimensions():
+    return f'{random.randint(1, 100)} x {random.randint(1, 100)} x {random.randint(1, 100)}'
+
+
+async def random_users():
+    users = await random_data("users", "user")
+    return [{"name": f"{x['first_name']} {x['last_name']}"} for x in users]
+
+
+images = []
+
+
+async def random_images():
+    global images
+
+    if len(images) > 0:
+        return images
+
+    placeholders = await random_data("placeholdit")
+    images = [x['image'] for x in placeholders]
+
+    return images
+
+
+async def random_products():
+    commerce = await random_data("commerce")
+    images = await random_images()
+    products = []
+
+    for idx, product in enumerate(commerce):
+        products.append({
+            "name": product['product_name'],
+            "description": f"A new {product['product_name']}",
+            "image": images[idx],
+            "review_count": 0,
+            "rating_sum": 0,
+        })
+
+    return products
+
+
+async def random_quantity():
+    return random.randint(0, 10)
+
+
+async def random_price():
+    return random.randint(100, 100000)
+
+
+async def random_rating():
+    return random.randint(1, 5)
+
+
+async def random_addresses():
+    addresses = await random_data("address")
+    return [{
+        "street": x['street_name'],
+        "city": x['city'],
+        "zip": x['zip']
+    } for x in addresses]
+
+
+async def random_contacts():
+    addresses = await random_data("phone_number")
+    return [x['cell_phone'] for x in addresses]
+
+
+async def random_stores():
+    companies = await random_data("company")
+    addresses = await random_addresses()
+    contacts = await random_contacts()
+    stores = []
+
+    for idx, company in enumerate(companies):
+        stores.append({
+            "name": company['business_name'],
+            "contact": contacts[idx],
+            "address": addresses[idx]
+        })
+
+    return stores
 
 
 async def generate_stores():
     return [
-        await Store(
-            name="Townsville Superstore",
-            address=Address(
-                street="123 Main St",
-                city="Townsville",
-                zip="12345"
-            ),
-            inventory=[]
-        ).save(),
-
-        await Store(
-            name="Anytown Big Store",
-            address=Address(
-                street="456 Main St",
-                city="Anytown",
-                zip="54321"
-            ),
-            inventory=[]
-        ).save(),
-
-        await Store(
-            name="Everytown General Store",
-            address=Address(
-                street="789 Main St",
-                city="Everytown",
-                zip="13524"
-            ),
-            inventory=[]
-        ).save(),
+        await Store(**store).save()
+        for store in await random_stores()
     ]
+
+
+async def generate_product_details(products: List[Product]):
+    appliances = await random_appliances()
+    sentences = await random_sentences()
+
+    for idx, product in enumerate(products):
+        product['details'] = {
+            "manufacturer": appliances[idx]['manufacturer'],
+            "package_dimensions": await random_dimensions(),
+            "images": await random_images(),
+            "full_summary": sentences[idx]
+        }
+
+    return products
 
 
 async def generate_products():
+    products = await random_products()
+    products = await generate_product_details(products)
+
     return [
-        await Product(
-            sku="1234",
-            name="4K TV",
-            price=80000,
-            description="A new 4K Smart TV",
-            sold_at=[],
-            reviews=[]
-        ).save(),
-
-        await Product(
-            sku="5678",
-            name="Macbook Pro",
-            price=200000,
-            description="A new Macbook Pro M1",
-            sold_at=[],
-            reviews=[]
-        ).save(),
-
-        await Product(
-            sku="9012",
-            name="Shampoo",
-            price=500,
-            description="A shampoo for curly hair",
-            sold_at=[],
-            reviews=[]
-        ).save(),
-
-        await Product(
-            sku="3456",
-            name="Lawnmower",
-            price=40000,
-            description="A self-propelled electric lawnmower with limited-time warranty",
-            sold_at=[],
-            reviews=[]
-        ).save(),
-
-        await Product(
-            sku="7890",
-            name="Queen Mattress",
-            price=20000,
-            description="A queen mattress with a soft, padded footrest",
-            sold_at=[],
-            reviews=[]
-        ).save(),
-
-        await Product(
-            sku="1234",
-            name="Smart Doorbell",
-            price=80000,
-            description="A smart doorbell with a camera that connects to your home network",
-            sold_at=[],
-            reviews=[]
-        ).save(),
+        await Product(**product).save()
+        for product in products
     ]
 
 
-async def generate_reviews(products: List[Product], users: List[User]):
-    new_products = []
-
+async def generate_reviews(products: List[Product]):
+    reviews = []
+    users = await random_users()
     for product in products:
         for user in users:
-            rating = random.randint(1, 5)
-            product.reviews.append(
-                Review(
-                    product_id=product.pk,
-                    user_id=user.pk,
-                    product_name=product.name,
-                    user_name=user.name,
-                    rating=rating,
-                    comment=f"This is a{' great' if rating > 3 else ' good' if rating > 2 else 'n okay' if rating > 1 else ' terrible'} {product.name}, {rating}/5 stars!"
-                )
-            )
-        new_products.append(await product.save())
+            rating = await random_rating()
+            reviews.append(await Review(
+                product_id=product.pk,
+                reviewer=user['name'],
+                rating=rating,
+                comment=f"This is a{' great' if rating > 3 else ' good' if rating > 2 else 'n okay' if rating > 1 else ' terrible'} {product.name}, {rating}/5 stars!",
+                published_date=datetime.date(
+                    2021, random.randint(1, 12), random.randint(1, 28))
+            ).save())
+            product.review_count += 1
+            product.rating_sum += rating
+            await product.save()
 
-    return new_products
-
-
-async def generate_sold_at(products: List[Product], stores: List[Store]):
-    new_products = []
-
-    for product in products:
-        for store in stores:
-            product.sold_at.append(store)
-        new_products.append(await product.save())
-
-    return new_products
+    return [reviews, products]
 
 
 async def generate_inventory(stores: List[Store], products: List[Product]):
-    new_stores = []
+    inventory = []
     for store in stores:
         for product in products:
-            store.inventory.append(Inventory(
+            inventory.append(await Inventory(
                 store_id=store.pk,
                 product_id=product.pk,
                 store_name=store.name,
-                product_name=product.name,
-                quantity=random.randint(0, 10)
-            ))
-        new_stores.append(await store.save())
+                store_contact=store.contact,
+                store_address=store.address,
+                quantity=await random_quantity(),
+                price=await random_price()
+            ).save())
 
-    return new_stores
+    return inventory
 
 
 async def clear_data():
@@ -188,22 +194,17 @@ async def clear_data():
     for product in products:
         await product.delete()
 
-    users = await User.find().all()
-    for user in users:
-        await user.delete()
-
 
 async def generate_data():
     await clear_data()
     stores = await generate_stores()
     products = await generate_products()
-    users = await generate_users()
+    [reviews, products] = await generate_reviews(products)
+    inventory = await generate_inventory(stores, products)
 
-    products = await generate_reviews(products, users)
-    products = await generate_sold_at(products, stores)
-    stores = await generate_inventory(stores, products)
     return {
         "stores": stores,
         "products": products,
-        "users": users
+        "reviews": reviews,
+        "inventory": inventory
     }
