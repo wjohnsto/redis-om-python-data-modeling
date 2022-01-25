@@ -27,3 +27,14 @@ This project expects you to set a `REDIS_OM_URL` environment variable, which sho
 To try the API, first, start the server:
 
     $ poetry run uvicorn main:app
+
+Once it is running you can visit http://127.0.0.1:8000/docs to see the API documentation.
+
+
+## About the project
+
+- **main.py**: The FastAPI application entrypoint
+- **api.py**: Contains the FastAPI API routes
+- **generate.py**: Contains functionality for clearing and regenerating data on your Redis instance
+- **models.py**: Contains the redis-om-python models
+  - There is some additional code in the models to make things a little bit cleaner in the database
