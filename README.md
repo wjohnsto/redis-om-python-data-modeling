@@ -1,6 +1,11 @@
 # redis-om-python-retail
 
-This repository contains an example of how to use [Redis OM Python](https://github.com/redis/redis-om-python) with FastAPI.
+This repository contains several example sub-projects:
+
+
+
+1. Tthe `api` directory contains an example of how to use [Redis OM Python](https://github.com/redis/redis-om-python) with FastAPI.
+1. The `one_to_one` directory contains a 1-to-1 data modeling example project.
 
 ## Installing
 
@@ -14,12 +19,7 @@ Then install the example app's dependencies:
 
     $ poetry install
 
-## Running the Project
-
-This project contains several example sub-projects:
-
-1. A FastAPI application in the `api` directory. It uses Redis OM for Python to save and retrieve data from Redis.
-1. A 1-to-1 data modeling example project in the `one_to_one` directory
+## Running the Projects
 
 ### Environment Variables
 
@@ -27,11 +27,16 @@ This project expects you to set a `REDIS_OM_URL` environment variable, which sho
 
     redis://[[username]:[password]]@localhost:6379/[database number]
 
+#### API
+
 To try the API, first, start the server:
 
     $ poetry run uvicorn main:app --app-dir api
 
 Once it is running you can visit http://127.0.0.1:8000/docs to see the API documentation.
+
+
+### 1-to-1
 
 To run the one-to-one "separate" example run:
 
