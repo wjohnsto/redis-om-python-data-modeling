@@ -1,7 +1,6 @@
 import asyncio
-import datetime
-from typing import List, Optional
-from aredis_om import connections, Field, JsonModel, EmbeddedJsonModel
+from typing import List
+from aredis_om import Field, JsonModel
 from aredis_om.model import Migrator
 
 from utils import Base
