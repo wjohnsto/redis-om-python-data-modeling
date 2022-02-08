@@ -11,6 +11,7 @@ class ProductDetail(Base("product_details"), JsonModel):
     description: str
     manufacturer: str
     dimensions: str
+    weight: str
     images: List[str]
 
 

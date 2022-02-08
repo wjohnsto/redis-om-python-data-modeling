@@ -10,6 +10,7 @@ class ProductDetail(Base("product_details"), EmbeddedJsonModel):
     description: str
     manufacturer: str
     dimensions: str
+    weight: str
     images: List[str]
 
 

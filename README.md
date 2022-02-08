@@ -2,10 +2,10 @@
 
 This repository contains several example sub-projects:
 
-
-
 1. Tthe `api` directory contains an example of how to use [Redis OM Python](https://github.com/redis/redis-om-python) with FastAPI.
-1. The `one_to_one` directory contains a 1-to-1 data modeling example project.
+1. The `one-to-one` directory contains a one-to-one data modeling example project.
+1. The `one-to-many` directory contains a one-to-many data modeling example project.
+1. The `many-to-many` directory contains a many-to-many data modeling example project.
 
 ## Installing
 
@@ -35,21 +35,32 @@ To try the API, first, start the server:
 
 Once it is running you can visit http://127.0.0.1:8000/docs to see the API documentation.
 
-
-### 1-to-1
+### one-to-one
 
 To run the one-to-one "separate" example run:
 
-    $ poetry run python ./one_to_one/separate.py
+    $ poetry run python ./one-to-one/separate.py
 
 To run the one-to-one "embedded" example run:
 
-    $ poetry run python ./one_to_one/embedded.py
+    $ poetry run python ./one-to-one/embedded.py
 
+### one-to-many
+
+To run the one-to-many example run:
+
+    $ poetry run python ./one-to-many/main.py
+
+### many-to-many
+
+To run the many-to-many example run:
+
+    $ poetry run python ./many-to-many/main.py
 
 ## About the projects
 
 ### The API
+
 - **main.py**: The FastAPI application entrypoint
 - **api.py**: Contains the FastAPI API routes
 - **generate.py**: Contains functionality for clearing and regenerating data on your Redis instance
@@ -58,6 +69,7 @@ To run the one-to-one "embedded" example run:
 - **utils.py**: Contains utility functions
 
 ### One-to-One
-- **separate.py**: A 1-to-1 data modeling example using separate models
-- **embedded.py**: A 1-to-1 data modeling example using embedded models
+
+- **separate.py**: A one-to-one data modeling example using separate models
+- **embedded.py**: A one-to-one data modeling example using embedded models
 - **utils.py**: Contains utility functions
