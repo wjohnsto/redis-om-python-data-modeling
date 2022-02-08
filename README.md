@@ -73,3 +73,13 @@ To run the many-to-many example run:
 - **separate.py**: A one-to-one data modeling example using separate models
 - **embedded.py**: A one-to-one data modeling example using embedded models
 - **utils.py**: Contains utility functions
+
+### One-to-Many
+
+- **main.py**: A one-to-many data modeling example
+- **utils.py**: Contains utility functions
+
+### Many-to-Many
+
+- **main.py**: A many-to-many data modeling example
+- **utils.py**: Contains utility functions
