@@ -21,23 +21,6 @@ class Product(Base("products"), JsonModel):
     details: Optional[ProductDetail]
 
 
-async def add_product():
-    product = {
-        "name": "Earbuds",
-        "image": "https://www.example.com/image.jpg",
-        "price": 1999,
-        "details": {
-                "description": "Ultra lightweight bluetooth 5.0 in-ear headphones with a batter that lasts 8 hours with normal use",
-                "manufacturer": "Senheiser",
-                "dimensions": "3 x 3 x 1.5 inches",
-                "weight": "0.13 ounces",
-                "images": ["https://www.example.com/image1.jpg", "https://www.example.com/image2.jpg"]
-        }
-    }
-
-    return await Product(**product).save()
-
-
 async def get_product_list():
     results = await connections \
         .get_redis_connection() \
@@ -50,15 +33,3 @@ async def get_product_list():
 
 async def get_product_details(product_id: str):
     return await Product.get(product_id)
-
-
-async def main():
-    await Migrator().run()
-    product = await add_product()
-    results = await get_product_list()
-    print(results)
-    results = await get_product_details(product.pk)
-    print(results)
-
-if __name__ == '__main__':
-    asyncio.run(main())
